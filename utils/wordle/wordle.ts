@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-enum WORD_CORRECT_TYPE {
+export enum WORD_CORRECT_TYPE {
   'NONE',
   'PARTITIAL',
   'CORRECT'
@@ -13,7 +13,16 @@ type Result = {
 
 type WordResult = Array<Result>
 
-export const useWordle = (answer: string) => {
+type WordleResult = {
+  isOver: boolean,
+  result: WordResult
+}
+
+export const useWordle = () => {
+
+  //  TODO: load random word in word list
+  const answer: string = 'audio'
+
   const [count, setCount] = useState(1)
   const [history, setHistory] = useState<Array<WordResult>>([])
 
@@ -30,17 +39,26 @@ export const useWordle = (answer: string) => {
   }
 
   const check = (word: Array<string>) => word.map((it, idx) => ({ word: it, state: checkState(it, idx, answer) }))
+  const checkIsOver = (result: WordResult) => result.every(it=>it.state === WORD_CORRECT_TYPE.CORRECT)
 
   const checkWord = (word: string | Array<string>) => {
+    //  TODO: check word in word list
+
+    //  split word and check spell currect
     const target: Array<string> = Array.isArray(word) ? word : word.split('')
     const result: WordResult = check(target)
 
-    setHistory(history => (history.push(result), history))
+    //  add history and count
+    setHistory(history => [...history, result])
     setCount(count => count + 1)
-    return result
-  }
 
-  //  TODO: check word is word
+    const isOver: boolean = checkIsOver(result)
+
+    return {
+      isOver,
+      result
+    }
+  }
 
   return {
     count,
