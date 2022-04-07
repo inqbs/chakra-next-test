@@ -4,9 +4,17 @@ type Data = {
   word: string
 }
 
-export default function handler(
+function getRandomInt(max: number) {
+  return Math.floor(Math.random() * max);
+}
+
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  res.status(200).json({word: 'audio'})
+  const wordList: Array<string> = await import('@/assets/words.json')
+
+  const word = wordList[getRandomInt(wordList.length)]
+
+  res.status(200).json({word})
 }
