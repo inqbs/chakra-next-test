@@ -26,7 +26,7 @@ const Wordle: NextPage = () => {
     }
   }
 
-  const submit = (e: FormEvent) => {
+  const submit = async (e: FormEvent) => {
     e.preventDefault()
 
     if(input.length !== 5){
@@ -34,7 +34,7 @@ const Wordle: NextPage = () => {
       return
     }
 
-    const result = checkWord(input)
+    const result = await checkWord(input)
 
     if(!result){
       alert('no word in dictionary')

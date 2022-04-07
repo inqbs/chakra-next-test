@@ -14,15 +14,14 @@ type Result = {
 type WordResult = Array<Result>
 
 export const useWordle = () => {
-
   const [isRunning, setIsRunning] = useState<boolean>(true)
   const [answer, setAnswer] = useState('')
   const [history, setHistory] = useState<Array<WordResult>>([])
   const count = useMemo(() => history.length, [history])
 
-  const init = () => {
-    //  TODO: load random word in word list
-    setAnswer('audio')
+  const init = async () => {
+    const {word} = await fetch(`/api/wordle/random`).then(res => res.json())
+    setAnswer(word)
 
     setHistory(() => [])
     setIsRunning(true)
@@ -43,8 +42,9 @@ export const useWordle = () => {
   const check = (word: Array<string>) => word.map((it, idx) => ({ word: it, state: checkState(it, idx, answer) }))
   const checkIsOver = (result: WordResult) => result.every(it=>it.state === WORD_CORRECT_TYPE.CORRECT)
 
-  const checkWord = (word: string | Array<string>) => {
-    //  TODO: check word in word list
+  const checkWord = async (word: string | Array<string>) => {
+    const {result: checkResult} = await fetch(`/api/wordle/check?word=${word}`).then(res => res.json())
+    if(!checkResult) return
 
     //  split word and check spell currect
     const target: Array<string> = Array.isArray(word) ? word : word.split('')
