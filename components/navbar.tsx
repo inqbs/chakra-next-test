@@ -1,22 +1,10 @@
-import { ReactNode } from 'react';
-import { Box, Flex, Avatar, HStack, Link, IconButton, Button, Menu, MenuButton, MenuList, MenuItem, MenuDivider, useDisclosure, useColorModeValue, Stack, } from '@chakra-ui/react';
+import Link from 'next/link'
+import { Box, Flex, Avatar, HStack, IconButton, Button, Menu, MenuButton, MenuList, MenuItem, MenuDivider, useDisclosure, useColorModeValue, Stack, } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 
-const Links = ['Dashboard', 'Projects', 'Team'];
-
-const NavLink = ({ children }: { children: ReactNode }) => (
-  <Link
-    px={2}
-    py={1}
-    rounded={'md'}
-    _hover={{
-      textDecoration: 'none',
-      bg: useColorModeValue('gray.200', 'gray.700'),
-    }}
-    href={'#'}>
-    {children}
-  </Link>
-);
+const Links = [
+  { href: '/wordle', text: 'Wordle' }
+];
 
 const NavBar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -32,13 +20,29 @@ const NavBar = () => {
           onClick={isOpen ? onClose : onOpen}
         />
         <HStack spacing={8} alignItems={'center'}>
-          <Box>Logo</Box>
+          <Box>
+            <Link href="/">Logo</Link>
+          </Box>
           <HStack
             as={'nav'}
             spacing={4}
             display={{ base: 'none', md: 'flex' }}>
             {Links.map((link) => (
-              <NavLink key={link}>{link}</NavLink>
+              <Box
+                key={link.text}
+                px={2}
+                py={1}
+                rounded={'md'}
+                _hover={{
+                  textDecoration: 'none',
+                  bg: useColorModeValue('gray.200', 'gray.700'),
+                }}>
+                <Link
+
+                  href={link.href} >
+                  {link.text}
+                </Link>
+              </Box>
             ))}
           </HStack>
         </HStack>
