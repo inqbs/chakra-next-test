@@ -1,14 +1,19 @@
 import { Box, Button, Center, Flex, Heading, HStack, PinInput, PinInputField, Text, VStack } from "@chakra-ui/react";
 import { NextPage } from "next";
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { useWordle, WORD_CORRECT_TYPE } from "../utils/wordle/wordle";
 
 const Wordle: NextPage = () => {
 
-  const [isRunning, setIsRunning] = useState<boolean>(true)
   const [input, setInput] = useState<string>('')
   const firstInput = useRef<HTMLInputElement>(null)
-  const {count, history, checkWord} = useWordle()
+  const {count, history, isRunning, checkWord, init} = useWordle()
+
+  useEffect(() => {
+    init()
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const getTileStyle = (state: WORD_CORRECT_TYPE) => {
     switch(state){
@@ -38,7 +43,6 @@ const Wordle: NextPage = () => {
 
     if(result.isOver){
       alert('word is over')
-      setIsRunning(false)
     }
 
     setInput('')
@@ -62,18 +66,26 @@ const Wordle: NextPage = () => {
             </HStack>
         ))}
       </VStack>
-      <form onSubmit={submit}>
-        <Center>
-          <Flex gap={4}>
-            <HStack flex="1">
-              <PinInput type="alphanumeric" variant="flushed" value={input} onChange={setInput}>
-                {Array(5).fill(undefined).map((_,idx) => (<PinInputField key={`input-${idx}`} {...(idx === 0 ? { ref:firstInput} : {})} />))}
-              </PinInput>
-            </HStack>
-            <Button type="submit" colorScheme="blue" disabled={!isRunning}>check</Button>
-          </Flex>
-        </Center>
-      </form>
+      {
+        isRunning ? 
+        (
+          <form onSubmit={submit}>
+            <Center>
+              <Flex gap={4}>
+                <HStack flex="1">
+                  <PinInput type="alphanumeric" variant="flushed" value={input} onChange={setInput}>
+                    {Array(5).fill(undefined).map((_,idx) => (<PinInputField key={`input-${idx}`} {...(idx === 0 ? { ref:firstInput} : {})} />))}
+                  </PinInput>
+                </HStack>
+                <Button type="submit" colorScheme="blue">check</Button>
+              </Flex>
+            </Center>
+          </form>
+        ) :
+        (
+          <Button colorScheme="red" onClick={() => init()}>Reset</Button>
+        )
+      }
     </VStack>
   )
 }

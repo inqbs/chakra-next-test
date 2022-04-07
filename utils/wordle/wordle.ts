@@ -13,18 +13,20 @@ type Result = {
 
 type WordResult = Array<Result>
 
-type WordleResult = {
-  isOver: boolean,
-  result: WordResult
-}
-
 export const useWordle = () => {
 
-  //  TODO: load random word in word list
-  const answer: string = 'audio'
-
+  const [isRunning, setIsRunning] = useState<boolean>(true)
+  const [answer, setAnswer] = useState('')
   const [history, setHistory] = useState<Array<WordResult>>([])
   const count = useMemo(() => history.length, [history])
+
+  const init = () => {
+    //  TODO: load random word in word list
+    setAnswer('audio')
+
+    setHistory(() => [])
+    setIsRunning(true)
+  }
 
   const checkState = (word:string, idx: number, source:string) => {
     const sourceArray = source.split('')
@@ -52,6 +54,7 @@ export const useWordle = () => {
     setHistory(history => [...history, result])
 
     const isOver: boolean = checkIsOver(result)
+    setIsRunning(!isOver)
 
     return {
       isOver,
@@ -59,14 +62,11 @@ export const useWordle = () => {
     }
   }
 
-  const reset = () => {
-    setHistory([])
-  }
-
   return {
+    isRunning,
     count,
     history,
     checkWord,
-    reset
+    init
   }
 }
