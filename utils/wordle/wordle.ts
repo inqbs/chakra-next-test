@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useMemo, useState } from "react"
 
 export enum WORD_CORRECT_TYPE {
   'NONE',
@@ -23,8 +23,8 @@ export const useWordle = () => {
   //  TODO: load random word in word list
   const answer: string = 'audio'
 
-  const [count, setCount] = useState(1)
   const [history, setHistory] = useState<Array<WordResult>>([])
+  const count = useMemo(() => history.length, [history])
 
   const checkState = (word:string, idx: number, source:string) => {
     const sourceArray = source.split('')
@@ -50,7 +50,6 @@ export const useWordle = () => {
 
     //  add history and count
     setHistory(history => [...history, result])
-    setCount(count => count + 1)
 
     const isOver: boolean = checkIsOver(result)
 
@@ -60,9 +59,14 @@ export const useWordle = () => {
     }
   }
 
+  const reset = () => {
+    setHistory([])
+  }
+
   return {
     count,
     history,
-    checkWord
+    checkWord,
+    reset
   }
 }
