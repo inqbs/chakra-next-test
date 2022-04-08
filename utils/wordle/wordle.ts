@@ -11,7 +11,7 @@ type Result = {
   state: WORD_CORRECT_TYPE
 }
 
-type WordResult = Array<Result>
+export type WordResult = Array<Result>
 
 export const useWordle = () => {
   const [isRunning, setIsRunning] = useState<boolean>(true)
